@@ -5,25 +5,31 @@ import java.util.List;
 
 public class Solution {
 
-    public List<List<Integer>> pathSum(TreeNode root, int target) {
-        List<List<Integer>> result = new ArrayList<>();
-        findSum(root, 0, target, new ArrayList<>(), result);
-        return result;
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        dfs(root, sum, res, path);
+        return res;
     }
 
-    private void findSum(TreeNode root, int sum, int target, List<Integer> buffer, List<List<Integer>> result) {
-        if (root == null) {
-            if (target == sum) {
-                result.add(new ArrayList<>(buffer));
-            }
+    public void dfs(TreeNode root, int sum, List<List<Integer>> res, List<Integer> path) {
+        if (root == null) return;
+        path.add(root.val);
+
+        if (root.left == null && root.right == null) {
+            if (root.val == sum)
+                res.add(new ArrayList<>(path));
             return;
         }
+        if (root.left != null) {
+            dfs(root.left, sum - root.val, res, path);
+            path.remove(path.size() - 1);
+        }
+        if (root.right != null) {
+            dfs(root.right, sum - root.val, res, path);
+            path.remove(path.size() - 1);
+        }
 
-        buffer.add(root.val);
-
-        findSum(root.left, sum + root.val, target, buffer, result);
-        findSum(root.right, sum + root.val, target, buffer, result);
-        buffer.remove(buffer.size() - 1);
     }
 
     public static class TreeNode {
